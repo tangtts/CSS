@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #434750;
+      }
+      ul {
+        position: relative;
+        transform: skewY(-15deg);
+      }
+      ul li {
+        position: relative;
+        list-style: none;
+        width: 200px;
+        background-color: #3e3f46;
+        padding: 15px;
+        z-index: var(--i);
+        transition: 0.5s;
+      }
+      ul li:hover {
+        background-color: #33a3ee;
+        transform: translateX(-50px);
+      }
+      ul li::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -40px;
+        width: 40px;
+        height: 100%;
+        background-color: #2e3133;
+        transform-origin: right;
+        transform: skewY(45deg);
+        transition: 0.5s;
+      }
+
+      ul li:hover::before {
+        background-color: #1f5378;
+      }
+
+      ul li::after {
+        content: "";
+        position: absolute;
+        top: -40px;
+        left: 0px;
+        width: 100%;
+        height: 40px;
+        background-color: #35383e;
+        transform-origin: bottom;
+        transform: skewX(45deg);
+        transition: 0.5s;
+      }
+      ul li:hover::after {
+        background-color: #2982b9;
+      }
+      ul li a {
+        text-decoration: none;
+        color: #999;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: 0.5s;
+      }
+      ul li:hover a {
+        color: #fff;
+      }
+      ul li:last-child::after {
+        box-shadow: -100px 100px 20px rgba(0, 0, 0, 0.25);
+      }
+    </style>
+
+    <body>
+      <ul>
+        <li style="--i: 5"><a href="#">首页</a></li>
+        <li style="--i: 4"><a href="#">关于</a></li>
+        <li style="--i: 3"><a href="#">公司</a></li>
+        <li style="--i: 2"><a href="#">联系我们</a></li>
+        <li style="--i: 1"><a href="#">设置</a></li>
+      </ul>
+    </body>
+
+    <script>
+      !(function (t, e) {
+        t.dayjs = e();
+        // t 指向 window
+      })(this, function () {
+        const t = 60,
+          e = 60 * t,
+          s = 24 * e,
+          r = 7 * s,
+          n = (t, e, s) =>
+            !t || t.length >= e ? t : `${Array(e + 1 - t.length).join(s)}${t}`;
+
+        class i {
+          constructor(t) {
+            this.utc = !1;
+
+            const e = this.parseConfig(t);
+
+            (this.date = new Date(e)),
+              // (this.timeZone = this.date.getTimezoneOffset() / 60),
+
+              // (this.timeZoneString = n(
+              //   String(-1 * this.timeZone).replace(/^(.)?(\d)/, "$10$200"),
+              //   5,
+              //   "+"
+              // )),
+
+              (this.mYear = this.date.getFullYear()),
+              (this.mMonth = this.date.getMonth()),
+              (this.mDay = this.date.getDate()),
+              (this.mWeek = this.date.getDay()),
+              (this.mHour = this.date.getHours()),
+              (this.mMinute = this.date.getMinutes()),
+              (this.mSecond = this.date.getSeconds());
+          }
+          parseConfig(t) {
+            if (!t) return new Date();
+            if (t instanceof Date) return t;
+
+            console.log(t);
+
+            if (/^(\d){8}$/.test(t)) {
+              return (
+                (this.utc = !0),
+                `${t.substr(0, 4)}-${t.substr(4, 2)}-${t.substr(6, 2)}`
+              );
+            }
+
+            return t;
+          }
+          year() {
+            return this.mYear;
+          }
+          month() {
+            return this.mMonth;
+          }
+          unix() {
+            const t = this.utc ? 60 * this.timeZone * 60 * 1e3 : 0;
+            return Math.floor((this.date.getTime() + t) / 1e3);
+          }
+          toString() {
+            return this.date.toUTCString();
+          }
+          startOf(t) {
+            switch (t) {
+              case "year":
+                return new i(new Date(this.year(), 0, 1));
+              case "month":
+                return new i(new Date(this.year(), this.month(), 1));
+              default:
+                return this;
+            }
+          }
+          add(n, a) {
+            let h;
+            switch (a) {
+              case "m":
+              case "minutes":
+                h = t;
+                break;
+              case "h":
+              case "hours":
+                h = e;
+                break;
+              case "d":
+              case "days":
+                h = s;
+                break;
+              case "w":
+              case "weeks":
+                h = r;
+                break;
+              default:
+                h = 1;
+            }
+            const u = this.unix() + n * h;
+            return new i(1e3 * u);
+          }
+          subtract(t, e) {
+            return this.add(-1 * t, e);
+          }
+          format(t = "YYYY-MM-DDTHH:mm:ssZ") {
+            const e = [
+              "Sunday",
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+            ];
+            return t.replace(
+              /Y{2,4}|M{1,2}|D{1,2}|d{1,4}|H{1,2}|m{1,2}|s{1,2}|Z{1,2}/g,
+              (t) => {
+                switch (t) {
+                  case "YY":
+                    return String(this.mYear).slice(-2);
+                  case "YYYY":
+                    return String(this.mYear);
+                  case "M":
+                    return String(this.mMonth + 1);
+                  case "MM":
+                    return n(String(this.mMonth + 1), 2, "0");
+                  case "D":
+                    return String(this.mDay);
+                  case "DD":
+                    return n(String(this.mDay), 2, "0");
+                  case "d":
+                    return String(this.mWeek);
+                  case "dddd":
+                    return e[this.mWeek];
+                  case "H":
+                    return String(this.mHour);
+                  case "HH":
+                    return n(String(this.mHour), 2, "0");
+                  case "m":
+                    return String(this.mMinute);
+                  case "mm":
+                    return n(String(this.mMinute), 2, "0");
+                  case "s":
+                    return String(this.mSecond);
+                  case "ss":
+                    return n(String(this.mSecond), 2, "0");
+                  case "Z":
+                    return `${this.timeZoneString.slice(0, -2)}:00`;
+                  case "ZZ":
+                    return this.timeZoneString;
+                  default:
+                    return t;
+                }
+              }
+            );
+          }
+        }
+        return (t) => new i(t);
+      });
+    </script>
+  </head>
+
+  <body>
+    <script>
+      function n(t, e, s) {
+        // 5 2 0
+        //  e 是 几个0 , s 是前缀
+        return !t || t.length >= e
+          ? t
+          : `${Array(e + 1 - t.length).join(s)}${t}`;
+      }
+
+      function format(t = "YYYY-MM-DDTHH:mm:ssZ") {
+        this.date = new Date();
+        this.mYear = this.date.getFullYear();
+        this.mMonth = this.date.getMonth();
+        this.mDay = this.date.getDate();
+        this.mWeek = this.date.getDay();
+        this.mHour = this.date.getHours();
+        this.mMinute = this.date.getMinutes();
+        this.mSecond = this.date.getSeconds();
+
+        const e = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        return t.replace(
+          /Y{2,4}|M{1,2}|D{1,2}|d{1,4}|H{1,2}|m{1,2}|s{1,2}|Z{1,2}/g,
+          (t) => {
+            switch (t) {
+              case "YY":
+                return String(this.mYear).slice(-2);
+              case "YYYY":
+                return String(this.mYear);
+              case "M":
+                return String(this.mMonth + 1);
+              case "MM":
+                return n(String(this.mMonth + 1), 2, "0");
+              case "D":
+                return String(this.mDay);
+              case "DD":
+                return n(String(this.mDay), 2, "0");
+              case "d":
+                return String(this.mWeek);
+              case "dddd":
+                return e[this.mWeek];
+              case "H":
+                return String(this.mHour);
+              case "HH":
+                return n(String(this.mHour), 2, "0");
+              case "m":
+                return String(this.mMinute);
+              case "mm":
+                return n(String(this.mMinute), 2, "0");
+              case "s":
+                return String(this.mSecond);
+              case "ss":
+                return n(String(this.mSecond), 2, "0");
+              default:
+                return t;
+            }
+          }
+        );
+      }
+      console.log(format());
+
+      var out = 25;
+      var inner = {
+        out: 20,
+        func: function () {
+          var out = 30;
+          return this.out;
+        },
+      };
+      console.log((inner.func, inner.func)());
+      console.log(inner.func());
+      console.log(inner.func());
+      console.log((inner.func = inner.func)());
+
+      console.log(name, "name");
+      if (false) {
+        // 确实
+        var name = 12;
+      }
+
+      class ListNode {
+        next;
+        value;
+        constructor(value) {
+          this.value = value;
+        }
+      }
+
+      class Queue {
+        //  head and tail is empty at begin
+        #head;
+        #tail;
+        #size;
+        constructor() {
+          this.#size = 0;
+        }
+        //
+        dequeue() {
+          let current = this.#head.next;
+          if (!current) return;
+          this.#head = this.#head.next;
+          this.#size--;
+          return current.value;
+        }
+        enqueue(value) {
+          let node = new ListNode(value);
+          if (!this.#head) {
+            this.#head = this.#tail = node;
+          } else {
+            // 尾插法
+            this.#tail.next = node;
+            this.#tail = node;
+          }
+          this.#size++;
+        }
+        get size() {
+          return this.#size;
+        }
+        *[Symbol.iterator]() {
+          let current = this.#head;
+
+          while (current) {
+            yield current.value;
+            current = current.next;
+          }
+        }
+        clear() {
+          this.#head = this.#tail = null;
+          this.#size = 0;
+        }
+      }
+
+      const queue = new Queue();
+      //此处打断点
+      queue.enqueue("⛵");
+      queue.enqueue("🌊");
+      //push in queue array
+
+      console.log(queue.dequeue());
+
+      console.log(queue.size);
+      for (let q of queue) {
+        console.log(q);
+      }
+      queue.clear();
+    </script>
+  </body>
+</html>
