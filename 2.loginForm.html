@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+
+    <title>用户登录</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      /* 设置body高度为100%窗口高度 */
+      height: 100vh;
+      /* 弹性盒子模型 */
+      display: flex;
+      /* 限免两个属性是让body里的子类居中 */
+      justify-content: center;
+      align-items: center;
+      background-color: #1d1928;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      width: 350px;
+      height: 450px;
+      border-radius: 20px;
+      background-color: #4471a3;
+      /* 盒子阴影 */
+      box-shadow: 15px 15px 10px rgba(33, 45, 58, 0.3);
+      overflow: hidden;
+      position: relative;
+    }
+    .container form {
+      width: 350px;
+      height: 200px;
+      display: flex;
+      justify-content: space-around;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+    }
+    .container form .tbx {
+      width: 250px;
+      height: 40px;
+      outline: none;
+      border: none;
+      border-bottom: 1px solid #fff;
+      background: none;
+      color: #fff;
+      font-size: 15px;
+    }
+    /* 设置文本框提示文本的样式 */
+    .container form .tbx::placeholder {
+      color: #fff;
+      font-size: 15px;
+    }
+    .container form .sub {
+      width: 250px;
+      height: 40px;
+      outline: none;
+      border: 1px solid #fff;
+      border-radius: 20px;
+      letter-spacing: 5px;
+      color: #fff;
+      background: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .container h1 {
+      color: #ecf0f1;
+      font-size: 50px;
+      letter-spacing: 5px;
+      font-weight: 100;
+      /* 文字阴影 */
+      text-shadow: 5px 5px 5px rgba(33, 45, 58, 0.3);
+      z-index: 1;
+    }
+    /* 设置鼠标进入的样式 */
+    .container .in {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      border-radius: 50%;
+      background: #cf455f;
+      transform: translate(-50%, -50%);
+      /* 使用in动画，持续0.5秒，缓出的时间函数，停留在最后一帧 */
+      animation: in 0.5s ease-out forwards;
+    }
+    /* 设置鼠标离开的样式 */
+    .container .out {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+
+      border-radius: 50%;
+      background: #cf455f;
+      transform: translate(-50%, -50%);
+      /* 使用out动画，持续0.5秒，缓出的时间函数，停留在最后一帧 */
+      animation: out 0.5s ease-out forwards;
+    }
+    /* 动画 */
+    /* 设置鼠标进入时，元素的动画 */
+    @keyframes in {
+      /* 初始关键帧 */
+      0% {
+        width: 0;
+        height: 0;
+      }
+      /* 结束关键帧 */
+      100% {
+        width: 1200px;
+        height: 1200px;
+      }
+    }
+    /* 设置鼠标离开时，元素的动画 */
+    @keyframes out {
+      /* 初始关键帧 */
+      0% {
+        width: 1200px;
+        height: 1200px;
+      }
+      /* 结束关键帧 */
+      100% {
+        width: 0;
+        height: 0;
+      }
+    }
+  </style>
+  <body>
+    <div class="container">
+      <h1>douyin</h1>
+      <form action="">
+        <input type="text" class="tbx" placeholder="账号" />
+        <input type="password" class="tbx" placeholder="密码" />
+        <input type="submit" class="sub" value="登录" />
+      </form>
+    </div>
+    <script>
+      // 定义一个con绑定.container
+      const con = document.querySelector(".container");
+
+      // 定义两个函数开关（门）
+      let isIn = true;
+      let isOut = false;
+      // 要覆盖全局的元素
+      var span;
+
+      // 添加监听
+      // 监听鼠标进去的事件
+      con.addEventListener("mouseenter", (e) => {
+        // 如果进去的门是打开的，就可以执行这个函数
+        if (isIn) {
+          // 获取进入的鼠标位置
+          // 生成元素的位置=进入点距离窗口的距离-父盒子距离窗口的距离
+          let inX = e.clientX - e.target.offsetLeft;
+          let inY = e.clientY - e.target.offsetTop;
+
+          // 创建一个span元素，并且给它对应的出生坐标
+          let el = document.createElement("span");
+          el.style.left = inX + "px";
+          el.style.top = inY + "px";
+          // 添加到con对应的父元素，即container
+          con.appendChild(el);
+
+          el.classList.remove("out"); // 移除出去的动画
+          el.classList.add("in"); // 添加进入的动画
+          span = document.querySelector(".container span");
+          isIn = false; // 关闭进来的门（不能使用进入的方法）
+          isOut = true; // 打开出去的门（可以使用出去的方法）
+        }
+      });
+      // 监听鼠标出去的事件
+      con.addEventListener("mouseleave", (e) => {
+        if (isOut) {
+          // 获取出去的鼠标位置
+          // 生成元素的位置=出去点距离窗口的距离-父盒子距离窗口的距离
+          let outX = e.clientX - e.target.offsetLeft;
+          let outY = e.clientY - e.target.offsetTop;
+
+          span.classList.remove("in"); // 移除进入的动画
+          span.classList.add("out"); // 添加出去的动画
+          // 添加出去的坐标
+          const out = document.querySelector(".out");
+          out.style.left = outX + "px";
+          out.style.top = outY + "px";
+
+          isOut = false; // 关闭出去的门
+          // 当动画结束后再删除元素
+          setTimeout(() => {
+            con.removeChild(span); // 删除元素
+            isIn = true; // 打开进入的门
+          }, 500);
+        }
+      });
+    </script>
+  </body>
+</html>
